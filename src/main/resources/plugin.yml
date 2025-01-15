@@ -1,0 +1,9 @@
+name: TNTRunHexa
+version: '1.0-SNAPSHOT'
+main: org.imradigamer.tNTRunHexa.TNTRunHexa
+api-version: '1.21'
+authors: [ ImRadiGamer ]
+commands:
+  tntrun:
+    usage: /tntrun
+    description: Te une a una partida de TNTRun

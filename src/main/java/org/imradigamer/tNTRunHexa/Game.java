@@ -36,7 +36,7 @@ public class Game {
 
     public void joinGame(Player player) {
         if (inProgress) {
-            player.sendMessage(TNTRunHexa.PREFIX + ChatColor.RED + "El juego ya ha comenzado.");
+            player.sendMessage(TNTRunHexa.PREFIX + ChatColor.RED + "El juego ya ha comenzado. No puedes unirte.");
             return;
         }
 
@@ -47,19 +47,30 @@ public class Game {
 
         players.add(player);
 
-        // Teleport player to the arena spawn
-        if (arenaWorldName != null) {
-            World arenaWorld = Bukkit.getWorld(arenaWorldName);
-            if (arenaWorld != null) {
-                player.teleport(arenaWorld.getSpawnLocation());
-                player.sendMessage(TNTRunHexa.PREFIX + ChatColor.GREEN + "¡Te has unido a la partida!");
-            }
+        // Prepare the arena and teleport the player
+        prepareArena();
+        World arenaWorld = Bukkit.getWorld(arenaWorldName);
+        if (arenaWorld != null) {
+            player.teleport(arenaWorld.getSpawnLocation());
+            player.sendMessage(TNTRunHexa.PREFIX + ChatColor.GREEN + "¡Te has unido a la partida!");
+        } else {
+            player.sendMessage(TNTRunHexa.PREFIX + ChatColor.RED + "Error: no se pudo encontrar la arena.");
         }
 
+        // Start the countdown if the minimum number of players is reached
         if (players.size() == 2) {
             startCountdown();
         }
     }
+    private void prepareArena() {
+        if (arenaWorldName == null) {
+            arenaWorldName = "TNTRunArena_" + System.currentTimeMillis();
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv clone TNTRunArena " + arenaWorldName);
+        }
+    }
+
+
+
 
     public void playerQuit(Player player) {
         players.remove(player);
@@ -102,9 +113,8 @@ public class Game {
     private void startGame() {
         inProgress = true;
 
-        // Duplicate world
-        arenaWorldName = "TNTRunArena_" + System.currentTimeMillis();
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv clone TNTRunArena " + arenaWorldName);
+        // Ensure the arena is prepared
+        prepareArena();
 
         World arenaWorld = Bukkit.getWorld(arenaWorldName);
         if (arenaWorld == null) {
@@ -118,8 +128,10 @@ public class Game {
         for (Player player : players) {
             player.teleport(spawnLocation);
             player.sendMessage(TNTRunHexa.PREFIX + ChatColor.GREEN + "¡El juego ha comenzado!");
+            player.setGameMode(GameMode.ADVENTURE);
         }
     }
+
 
     public void endGame() {
         broadcastMessage(ChatColor.GOLD + "El juego ha terminado.");

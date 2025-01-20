@@ -1,7 +1,6 @@
 package org.imradigamer.tNTRunHexa;
 
 import org.bukkit.entity.Player;
-import org.imradigamer.tNTRunHexa.TNTRunHexa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,4 +41,22 @@ public class GameManager {
             }
         }
     }
+
+    public boolean isPlayerInGame(Player player) {
+        for (Game game : activeGames) {
+            if (game.containsPlayer(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public Game getGameByPlayer(Player player) {
+        for (Game game : activeGames) {
+            if (game.containsPlayer(player)) {
+                return game;
+            }
+        }
+        return null;
+    }
+
 }

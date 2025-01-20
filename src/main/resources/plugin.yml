@@ -7,3 +7,4 @@ commands:
   tntrun:
     usage: /tntrun
     description: Te une a una partida de TNTRun
+    permission: tntrun.admin
